@@ -148,6 +148,12 @@
                   <p>List</p>
                 </a>
               </li>
+              <li class="nav-item">
+                <a href="./index.php?page=evaluation_status" class="nav-link nav-evaluation_status tree-item">
+                  <i class="fas fa-angle-right nav-icon"></i>
+                  <p>Evaluation Status</p>
+                </a>
+              </li>
             </ul>
           </li>
           <li class="nav-item dropdown">

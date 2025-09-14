@@ -114,10 +114,10 @@ $restriction = $conn->query("SELECT r.id,s.id as sid,f.id as fid,concat(f.firstn
 								</tbody>
 							</table>
 						<?php endwhile; ?>
-						<div class="card mt-4 border border-info p-3">
+						<div class="card mt-4 border border-info p-3 text-dark">
     <h5>Additional Feedback</h5>
 
-    <div class="form-group mb-3">
+    <div class="form-group mb-3 ">
         <label for="rating">Overall Rating:</label><br>
         <div class="icheck-primary d-inline mr-3">
             <input type="radio" id="rating_good" name="rating" value="Good" checked>
@@ -136,7 +136,7 @@ $restriction = $conn->query("SELECT r.id,s.id as sid,f.id as fid,concat(f.firstn
     <div class="form-group">
         <label for="comment">Comment <span class="text-danger">*</span></label>
         <textarea name="comment" id="comment" rows="4" class="form-control"
-            placeholder="Write your feedback here..." required></textarea>
+            placeholder="Write your feedback here..."></textarea>
     </div>
 </div>
 
