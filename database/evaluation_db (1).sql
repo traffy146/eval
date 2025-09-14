@@ -58,13 +58,6 @@ CREATE TABLE `additional_feedback` (
   `comment` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Dumping data for table `additional_feedback`
---
-
-INSERT INTO `additional_feedback` (`id`, `rating`, `comment`) VALUES
-(2, 'Bad', '8080 magturo'),
-(3, 'Bad', '8080 magturo');
 
 -- --------------------------------------------------------
 
