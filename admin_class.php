@@ -740,13 +740,38 @@ class Action
                                        AND el.feedback_id IS NOT NULL AND el.feedback_id > 0");
 
 		$rate = array();
+		$total_rate = 0;
 		while ($row = $get->fetch_assoc()) {
+			if (isset($row['rate']))
+				$total_rate += (float) $row['rate'];
 			if (!isset($rate[$row['question_id']][$row['rate']]))
 				$rate[$row['question_id']][$row['rate']] = 0;
 			$rate[$row['question_id']][$row['rate']] += 1;
 		}
 
 		$ta = $answered->num_rows;
+
+		$num_questions_qry = $this->db->query("SELECT COUNT(*) as cnt FROM question_list where academic_id = {$_SESSION['academic']['id']}");
+		$num_questions_row = $num_questions_qry->fetch_array();
+		$num_questions = isset($num_questions_row['cnt']) ? (int) $num_questions_row['cnt'] : 0;
+		$avg_per_item = 0;
+		$verbal_rating = '';
+		if ($ta > 0 && $num_questions > 0) {
+			$average_total_per_student = $total_rate / $ta;
+			$avg_per_item = $average_total_per_student / $num_questions;
+			$avg_per_item = round($avg_per_item, 2);
+			if ($avg_per_item >= 4.5 && $avg_per_item <= 5.0) {
+				$verbal_rating = 'Outstanding';
+			} elseif ($avg_per_item >= 3.75 && $avg_per_item < 4.5) {
+				$verbal_rating = 'Very Satisfactory';
+			} elseif ($avg_per_item >= 3.00 && $avg_per_item < 3.75) {
+				$verbal_rating = 'Satisfactory';
+			} elseif ($avg_per_item >= 2.00 && $avg_per_item < 3.00) {
+				$verbal_rating = 'Fair';
+			} else {
+				$verbal_rating = 'Needs Improvement';
+			}
+		}
 		$r = array();
 		foreach ($rate as $qk => $qv) {
 			foreach ($qv as $rk => $rv) {
@@ -769,6 +794,31 @@ class Action
 		$data['data'] = $r;
 		$data['feedback'] = $feedback_data;
 		$data['rating_summary'] = $rating_summary;
+		$data['avg_per_item'] = $avg_per_item;
+		$data['verbal_rating'] = $verbal_rating;
+		$final_report = array('avg_per_item' => 0, 'verbal_rating' => '', 'total_evaluations' => 0);
+		$sum_row = $this->db->query("SELECT SUM(rate) as total_rate FROM evaluation_answers where evaluation_id in (SELECT evaluation_id FROM evaluation_list where academic_id = {$_SESSION['academic']['id']} and faculty_id = $faculty_id)")->fetch_array();
+		$total_rate_all = isset($sum_row['total_rate']) ? (float) $sum_row['total_rate'] : 0;
+		$cnt_row = $this->db->query("SELECT COUNT(DISTINCT evaluation_id) as cnt FROM evaluation_list where academic_id = {$_SESSION['academic']['id']} and faculty_id = $faculty_id")->fetch_array();
+		$count_evals = isset($cnt_row['cnt']) ? (int) $cnt_row['cnt'] : 0;
+		if ($count_evals > 0 && $num_questions > 0) {
+			$average_total_per_submission = $total_rate_all / $count_evals;
+			$final_avg_per_item = round($average_total_per_submission / $num_questions, 2);
+			$final_report['avg_per_item'] = $final_avg_per_item;
+			$final_report['total_evaluations'] = $count_evals;
+			if ($final_avg_per_item >= 4.5 && $final_avg_per_item <= 5.0) {
+				$final_report['verbal_rating'] = 'Outstanding';
+			} elseif ($final_avg_per_item >= 3.75 && $final_avg_per_item < 4.5) {
+				$final_report['verbal_rating'] = 'Very Satisfactory';
+			} elseif ($final_avg_per_item >= 3.00 && $final_avg_per_item < 3.75) {
+				$final_report['verbal_rating'] = 'Satisfactory';
+			} elseif ($final_avg_per_item >= 2.00 && $final_avg_per_item < 3.00) {
+				$final_report['verbal_rating'] = 'Fair';
+			} else {
+				$final_report['verbal_rating'] = 'Needs Improvement';
+			}
+		}
+		$data['final_report'] = $final_report;
 
 		return json_encode($data);
 	}

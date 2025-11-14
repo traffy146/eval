@@ -27,14 +27,17 @@ function ordinal_suffix($num)
 	</div>
 	<div class="row">
 		<div class="col-md-3">
-			<div class="callout " style="background:transparent !important; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: 15px; border:none;color:white">
+			<div class="callout "
+				style="background:transparent !important; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: 15px; border:none;color:white">
 				<div class="list-group" id="class-list">
 
 				</div>
 			</div>
 		</div>
 		<div class="col-md-9">
-			<div class="callout callout-info" style="background:transparent !important; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: 15px; border:none;color:white" id="printable">
+			<div class="callout callout-info"
+				style="background:transparent !important; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: 15px; border:none;color:white"
+				id="printable">
 				<div>
 					<h3 class="text-center">Evaluation Report</h3>
 					<hr>
@@ -57,6 +60,28 @@ function ordinal_suffix($num)
 						</tr>
 					</table>
 					<p class=""><b>Total Student Evaluated: <span id="tse"></span></b></p>
+					<p class=""><b>Overall Average (per item): <span id="avg_per_item"></span></b> <small>(<span
+								id="avg_verbal"></span>)</small></p>
+					<!-- Final report table for teacher across all classes/subjects -->
+					<div id="final-report-wrapper" class="mt-2">
+						<h5>Final Report (All Evaluations)</h5>
+						<table class="table table-sm wborder">
+							<thead>
+								<tr>
+									<th>Total Evaluations</th>
+									<th>Numerical Rating</th>
+									<th>Adjectival Rating</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td id="final_total">-</td>
+									<td id="final_num">-</td>
+									<td id="final_adj">-</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
 				</div>
 				<fieldset class="border border-info p-2 w-100">
 					<legend class="w-auto">Criteria for Evaluation</legend>
@@ -118,8 +143,7 @@ function ordinal_suffix($num)
 								class="badge badge-pill badge-danger ml-1" id="count-bad">0</span></button>
 					</div>
 				</div>
-				<div id="feedback-list" class="border rounded p-2"
-					style="max-height:300px; overflow:auto;">
+				<div id="feedback-list" class="border rounded p-2" style="max-height:300px; overflow:auto;">
 					<p class="text-muted mb-0" id="no-feedback-msg" style="display:none">No feedback available for the
 						selected rating.</p>
 					<ul class="list-unstyled mb-0" id="feedback-ul"></ul>
@@ -134,7 +158,6 @@ function ordinal_suffix($num)
 		color: black !important;
 		font-weight: 700 !important;
 	}
-	
 </style>
 <noscript>
 	<style>
@@ -244,10 +267,28 @@ function ordinal_suffix($num)
 					if (Object.keys(resp).length <= 0) {
 						$('.rates').text('')
 						$('#tse').text('')
+						$('#avg_per_item').text('')
+						$('#avg_verbal').text('')
 						$('#print-btn').hide()
 					} else {
 						$('#print-btn').show()
 						$('#tse').text(resp.tse)
+						if (typeof resp.avg_per_item !== 'undefined' && resp.avg_per_item !== null) {
+							$('#avg_per_item').text(resp.avg_per_item)
+						} else {
+							$('#avg_per_item').text('N/A')
+						}
+						$('#avg_verbal').text(resp.verbal_rating || '')
+						// populate final report (teacher-wide)
+						if (resp.final_report) {
+							$('#final_total').text(resp.final_report.total_evaluations || 0)
+							$('#final_num').text(typeof resp.final_report.avg_per_item !== 'undefined' ? resp.final_report.avg_per_item : '-')
+							$('#final_adj').text(resp.final_report.verbal_rating || '-')
+						} else {
+							$('#final_total').text('-')
+							$('#final_num').text('-')
+							$('#final_adj').text('-')
+						}
 						$('.rates').text('-')
 						var data = resp.data
 						Object.keys(data).map(q => {
