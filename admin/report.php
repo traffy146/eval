@@ -25,7 +25,7 @@ function ordinal_suffix($num)
                 <select name="" id="faculty_id" class="form-control form-control-sm select2">
                     <option value=""></option>
                     <?php
-                    $faculty = $conn->query("SELECT *,concat(firstname,' ',lastname) as name FROM faculty_list order by concat(firstname,' ',lastname) asc");
+                    $faculty = $conn->query("SELECT *,concat(firstname,' ',COALESCE(NULLIF(middlename,''),''),' ',lastname) as name FROM faculty_list order by concat(firstname,' ',lastname) asc");
                     $f_arr = array();
                     $fname = array();
                     while ($row = $faculty->fetch_assoc()):

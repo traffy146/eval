@@ -10,7 +10,7 @@
                 <select id="filter-student" class="form-control mr-2">
                     <option value="">All Students</option>
                     <?php
-                    $students = $conn->query("SELECT id, CONCAT(firstname,' ',lastname) as name FROM student_list");
+                    $students = $conn->query("SELECT id, CONCAT(firstname,' ',COALESCE(NULLIF(middlename,''),''),' ',lastname) as name FROM student_list");
                     $student_arr = [];
                     while ($s = $students->fetch_assoc()) {
                         $student_arr[$s['id']] = $s['name'];
@@ -32,7 +32,7 @@
                 <select id="filter-faculty" class="form-control mr-2">
                     <option value="">All Faculties</option>
                     <?php
-                    $faculty = $conn->query("SELECT id, CONCAT(firstname,' ',lastname) as name FROM faculty_list");
+                    $faculty = $conn->query("SELECT id, CONCAT(firstname,' ',COALESCE(NULLIF(middlename,''),''),' ',lastname) as name FROM faculty_list");
                     $faculty_arr = [];
                     while ($f = $faculty->fetch_assoc()) {
                         $faculty_arr[$f['id']] = $f['name'];
@@ -60,9 +60,9 @@
 
                     // Get all evaluated rows
                     $evals = $conn->query("SELECT e.*, 
-    CONCAT(s.firstname,' ',s.lastname) as student_name, 
+    CONCAT(s.firstname,' ',COALESCE(NULLIF(s.middlename,''),''),' ',s.lastname) as student_name, 
     sub.subject as subject_name, 
-    CONCAT(f.firstname,' ',f.lastname) as faculty_name
+    CONCAT(f.firstname,' ',COALESCE(NULLIF(f.middlename,''),''),' ',f.lastname) as faculty_name
     FROM evaluation_list e
     INNER JOIN student_list s ON e.student_id = s.id
     INNER JOIN subject_list sub ON e.subject_id = sub.id
@@ -109,28 +109,28 @@
 
 <script>
     $(document).ready(function () {
-    $('#eval-status-table').dataTable();
+        $('#eval-status-table').dataTable();
 
-    // Only one filter active at a time
-    $('#filter-student, #filter-subject, #filter-faculty').on('change', function () {
-        var id = $(this).attr('id');
-        // Reset other filters
-        $('#filter-student, #filter-subject, #filter-faculty').not('#' + id).val('');
-        var value = $(this).val();
-        var type = id.replace('filter-', '');
+        // Only one filter active at a time
+        $('#filter-student, #filter-subject, #filter-faculty').on('change', function () {
+            var id = $(this).attr('id');
+            // Reset other filters
+            $('#filter-student, #filter-subject, #filter-faculty').not('#' + id).val('');
+            var value = $(this).val();
+            var type = id.replace('filter-', '');
 
-        $('#eval-status-table tbody tr').each(function () {
-            var show = true;
-            if (value) {
-                show = ($(this).data(type) == value);
-            }
-            $(this).toggle(show);
+            $('#eval-status-table tbody tr').each(function () {
+                var show = true;
+                if (value) {
+                    show = ($(this).data(type) == value);
+                }
+                $(this).toggle(show);
+            });
+        });
+
+        // Prevent form submit from doing anything
+        $('#filter-form').on('submit', function (e) {
+            e.preventDefault();
         });
     });
-
-    // Prevent form submit from doing anything
-    $('#filter-form').on('submit', function (e) {
-        e.preventDefault();
-    });
-});
 </script>
