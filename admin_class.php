@@ -100,14 +100,9 @@ class Action
 			$data .= ", password=md5('$password') ";
 			$password_changed = true;
 		}
-		$check = $this->db->query("SELECT * FROM users where email ='$email' " . (!empty($id) ? " and id != {$id} " : ''))->num_rows;
-		if ($check > 0) {
-			return 2;
-			exit;
-		}
 		$check_username = $this->db->query("SELECT * FROM users where username ='$username' " . (!empty($id) ? " and id != {$id} " : ''))->num_rows;
 		if ($check_username > 0) {
-			return 4;
+			return 2;
 			exit;
 		}
 		if (isset($_FILES['img']) && $_FILES['img']['tmp_name'] != '') {
@@ -155,7 +150,7 @@ class Action
 			}
 		}
 
-		$check = $this->db->query("SELECT * FROM users where email ='$email' " . (!empty($id) ? " and id != {$id} " : ''))->num_rows;
+		$check = $this->db->query("SELECT * FROM users where username ='$username' " . (!empty($id) ? " and id != {$id} " : ''))->num_rows;
 		if ($check > 0) {
 			return 2;
 			exit;
@@ -202,7 +197,7 @@ class Action
 				}
 			}
 		}
-		$check = $this->db->query("SELECT * FROM {$type[$_SESSION['login_type']]} where email ='$email' " . (!empty($id) ? " and id != {$id} " : ''))->num_rows;
+		$check = $this->db->query("SELECT * FROM {$type[$_SESSION['login_type']]} where username ='$username' " . (!empty($id) ? " and id != {$id} " : ''))->num_rows;
 		if ($check > 0) {
 			return 2;
 			exit;
@@ -587,11 +582,6 @@ class Action
 			$data .= ", password=md5('$password') ";
 			$password_changed = true;
 		}
-		$check = $this->db->query("SELECT * FROM faculty_list where email ='$email' " . (!empty($id) ? " and id != {$id} " : ''))->num_rows;
-		if ($check > 0) {
-			return 2;
-			exit;
-		}
 		$check = $this->db->query("SELECT * FROM faculty_list where school_id ='$school_id' " . (!empty($id) ? " and id != {$id} " : ''))->num_rows;
 		if ($check > 0) {
 			return 3;
@@ -599,7 +589,7 @@ class Action
 		}
 		$check_username = $this->db->query("SELECT * FROM faculty_list where username ='$username' " . (!empty($id) ? " and id != {$id} " : ''))->num_rows;
 		if ($check_username > 0) {
-			return 4;
+			return 2;
 			exit;
 		}
 		if (isset($_FILES['img']) && $_FILES['img']['tmp_name'] != '') {
@@ -660,14 +650,9 @@ class Action
 			$data .= ", password=md5('$password') ";
 			$password_changed = true;
 		}
-		$check = $this->db->query("SELECT * FROM student_list where email ='$email' " . (!empty($id) ? " and id != {$id} " : ''))->num_rows;
-		if ($check > 0) {
-			return 2;
-			exit;
-		}
 		$check_username = $this->db->query("SELECT * FROM student_list where username ='$username' " . (!empty($id) ? " and id != {$id} " : ''))->num_rows;
 		if ($check_username > 0) {
-			return 4;
+			return 2;
 			exit;
 		}
 		if (isset($_FILES['img']) && $_FILES['img']['tmp_name'] != '') {

@@ -82,7 +82,7 @@
     height: 100%;
   }
   .card,.card-body{
-	color: #efeaeaff;
+	color: black;
 	background: transparent!important;
   backdrop-filter: blur(10px);    
   -webkit-backdrop-filter: blur(10px); 
@@ -96,7 +96,7 @@
 .custom-select {
   background: rgba(255, 255, 255, 0.1); /* transparent glass look */
   border: 1px solid rgba(255, 255, 255, 0.6); /* white border */
-  color: #fff; /* white text */
+  color: black; 
   border-radius: 8px;
 }
 
@@ -110,14 +110,14 @@
 .custom-select:focus {
   background: rgba(255, 255, 255, 0.15);
   border: 1px solid #fff; /* brighter border on focus */
-  color: #fff;
+  color: black;
   box-shadow: none; /* remove default blue glow */
 }
 
 .custom-select {
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.6);
-  color: #fff;
+  color: black;
   border-radius: 8px;
 }
 </style>

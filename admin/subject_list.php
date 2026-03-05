@@ -62,7 +62,7 @@
     height: 100%;
   }
   .card,.card-body{
-	color: #efeaeaff;
+	color: black;
 	background: transparent!important;
   backdrop-filter: blur(10px);    
   -webkit-backdrop-filter: blur(10px); 

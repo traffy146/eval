@@ -23,8 +23,9 @@ if (isset($_GET['fid']))
 	$faculty_id = $_GET['fid'];
 if (isset($_GET['sid']))
 	$subject_id = $_GET['sid'];
-$restriction = $conn->query("SELECT r.id,s.id as sid,f.id as fid,concat(f.firstname,' ',COALESCE(NULLIF(f.middlename,''),''),' ',f.lastname) as faculty,s.code,s.subject FROM restriction_list r inner join faculty_list f on f.id = r.faculty_id inner join subject_list s on s.id = r.subject_id where academic_id ={$_SESSION['academic']['id']} and class_id = {$_SESSION['login_class_id']} and r.id not in (SELECT restriction_id from evaluation_list where academic_id ={$_SESSION['academic']['id']} and student_id = {$_SESSION['login_id']} ) ");
+$restriction = $conn->query("SELECT r.id,s.id as sid,f.id as fid,CONCAT(f.firstname,' ',COALESCE(NULLIF(f.middlename,''),''),' ',f.lastname) AS faculty,s.code,s.subject FROM restriction_list r inner join faculty_list f on f.id = r.faculty_id inner join subject_list s on s.id = r.subject_id where academic_id ={$_SESSION['academic']['id']} and class_id = {$_SESSION['login_class_id']} and r.id not in (SELECT restriction_id from evaluation_list where academic_id ={$_SESSION['academic']['id']} and student_id = {$_SESSION['login_id']} ) ");
 ?>
+
 
 <div class="col-lg-12">
 	<div class="row">
@@ -44,15 +45,11 @@ $restriction = $conn->query("SELECT r.id,s.id as sid,f.id as fid,concat(f.firstn
 			</div>
 		</div>
 		<div class="col-md-9">
-			<div class="card card-outline" style="background:transparent !important; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: 15px; border:none;color:white">
+			<div class="card card-outline" style="background:transparent !important; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: 15px; border:none;color:black">
 				<div class="card-header">
 					<b>Evaluation Questionnaire for Academic:
 						<?php echo $_SESSION['academic']['year'] . ' ' . (ordinal_suffix($_SESSION['academic']['semester'])) ?>
 					</b>
-					<div class="card-tools">
-						<button class="btn btn-sm btn-flat btn-primary bg-gradient-primary mx-1"
-							form="manage-evaluation">Submit Evaluation</button>
-					</div>
 				</div>
 				<div class="card-body">
 					<fieldset class="border border-info p-2 w-100">
@@ -140,6 +137,9 @@ $restriction = $conn->query("SELECT r.id,s.id as sid,f.id as fid,concat(f.firstn
     </div>
 </div>
 
+					<div class="card-tools">
+						<button class="btn btn-sm btn-flat btn-primary bg-gradient-primary mx-1" form="manage-evaluation">Submit Evaluation</button>
+					</div>
 
 					</form>
 				</div>
@@ -169,12 +169,119 @@ $restriction = $conn->query("SELECT r.id,s.id as sid,f.id as fid,concat(f.firstn
 			data: $(this).serialize(),
 			success: function (resp) {
 				if (resp == 1) {
-					alert_toast("Data successfully saved.", "success");
+					alert_toast("Evaluation completed successfully!", "success");
 					setTimeout(function () {
 						location.reload()
 					}, 1750)
+				} else {
+					alert_toast("An error occurred. Please try again.", "error");
+					end_load();
 				}
+			},
+			error: function() {
+				alert_toast("An error occurred. Please try again.", "error");
+				end_load();
 			}
 		})
 	})
 </script>
+
+<style>
+
+.main-header {
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    z-index: 1030;
+}
+.navbar-nav .nav-link {
+    color: #000 !important;
+}
+@media (max-width: 767px) {
+    .main-header .navbar-brand span {
+        display: none; /* hide school name text on small screens */
+    }
+}
+
+
+	/* Base styling for all rating labels */
+.icheck-primary label {
+    padding: 1px 4px;
+    border-radius: 3px;
+    color: #fff;
+    cursor: pointer;
+}
+
+
+#rating_good + label {
+	color: #28a745;
+}
+
+
+#rating_neutral + label {
+    color: #ffc107; 
+}
+
+#rating_bad + label {
+	color: #dc3545;
+}
+
+
+/* ===========================
+   SCROLLABLE EVALUATION TABLE
+   =========================== */
+
+/* Wrapper effect using table itself */
+.table {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Keep table structure intact */
+.table thead,
+.table tbody,
+.table tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
+
+/* Sticky header for better UX */
+.table thead th {
+    position: sticky;
+    top: 0;
+    background: #809db8ff; /* matches bg-gradient-secondary */
+    color: #fff;
+    z-index: 2;
+}
+
+/* Question column wider */
+.table td:first-child,
+.table th:first-child {
+    width: 45%;
+    white-space: normal;
+}
+
+/* Rating columns fixed width */
+.table th:not(:first-child),
+.table td:not(:first-child) {
+    width: 11%;
+    text-align: center;
+}
+
+/* Improve scroll hint on mobile */
+@media (max-width: 768px) {
+    .table {
+        border-radius: 10px;
+        box-shadow: inset -10px 0 10px -10px rgba(0,0,0,0.2);
+    }
+}
+
+/* Make radios easier to tap */
+
+
+
+	</style>
+	

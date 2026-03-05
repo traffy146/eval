@@ -39,12 +39,12 @@ $astat = array("Not Yet Started", "On-going", "Closed");
     font-size: 2rem;
     font-weight: bold;
     font-family: "Helvetica", "Poppins", sans-serif;
-    color: white;
+    color: black;
   }
 
   .dashboard-academic h4 {
     font-size: 1.1rem;
-    color: white;
+    color: black;
     margin-top: 10px;
   }
 
@@ -74,23 +74,23 @@ $astat = array("Not Yet Started", "On-going", "Closed");
   .dashboard-card i {
     font-size: 40px;
     margin-bottom: 10px;
-    color: white;
+    color: black;
   }
 
   .dashboard-card h3 {
     margin: 0;
     font-size: 1.8rem;
-    color: #e9ebedff;
+    color: #black;
   }
 
   .dashboard-card p {
     margin: 5px 0 0;
-    color: #f3ededff;
+    color: black;
     font-size: 1rem;
   }
 
   p {
-    color: white;
+    color: black;
   }
 
   .activity-logs-section {
@@ -110,7 +110,7 @@ $astat = array("Not Yet Started", "On-going", "Closed");
   }
 
   .activity-logs-card h3 {
-    color: white;
+    color: black;
     margin-bottom: 20px;
     font-size: 1.5rem;
     border-bottom: 2px solid rgba(255, 255, 255, 0.2);

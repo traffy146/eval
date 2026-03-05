@@ -83,7 +83,7 @@ include '../db_connect.php';
 								</td>
 								<td>
 									<b><?php echo isset($s_arr[$row['subject_id']]) ? $s_arr[$row['subject_id']]['subj'] : '' ?></b>
-									<input type="hidden" name="subject_id[]" value="<?php echo $row['class_id'] ?>">
+									<input type="hidden" name="subject_id[]" value="<?php echo $row['subject_id'] ?>">
 								</td>
 								<td class="text-center">
 									<button class="btn btn-sm btn-outline-danger" onclick="$(this).closest('tr').remove()"

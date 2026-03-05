@@ -75,7 +75,7 @@
 <style>
     .card,
     .card-body {
-        color: #efeaeaff;
+        color: black;
         background: transparent !important;
         backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);
@@ -123,13 +123,19 @@
                 success: function (resp) {
                     if (resp == 1) {
                         alert_toast('Subject added successfully', 'success');
-                        load_irregular_subjects(student_id);
                         $('#add_subject_select').val('').trigger('change');
+                        end_load();
+                        load_irregular_subjects(student_id); // This will handle end_load()
                     } else if (resp == 2) {
                         alert_toast('This subject is already assigned to this student', 'warning');
+                        end_load();
                     } else {
                         alert_toast('An error occurred', 'error');
+                        end_load();
                     }
+                },
+                error: function () {
+                    alert_toast('An error occurred. Please try again.', 'error');
                     end_load();
                 }
             });
@@ -146,6 +152,10 @@
             },
             success: function (resp) {
                 $('#irregular_subjects_tbody').html(resp);
+                end_load();
+            },
+            error: function () {
+                $('#irregular_subjects_tbody').html('<tr><td colspan="4" class="text-center text-danger">Error loading subjects</td></tr>');
                 end_load();
             }
         });
@@ -166,10 +176,15 @@
             success: function (resp) {
                 if (resp == 1) {
                     alert_toast('Subject removed successfully', 'success');
-                    load_irregular_subjects(student_id);
+                    end_load();
+                    load_irregular_subjects(student_id); // This will handle end_load()
                 } else {
                     alert_toast('An error occurred', 'error');
+                    end_load();
                 }
+            },
+            error: function () {
+                alert_toast('An error occurred. Please try again.', 'error');
                 end_load();
             }
         });

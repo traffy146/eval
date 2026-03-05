@@ -30,7 +30,10 @@
 						</div>
 						<div class="form-group"> <label for="" class="control-label">Username</label>
 							<input type="text" name="username" class="form-control form-control-sm" required
-								value="<?php echo isset($username) ? $username : '' ?>">
+								value="<?php echo isset($username) ? $username : '' ?>" <?php echo isset($id) && $id != '' ? 'readonly' : '' ?>>
+							<?php if (isset($id) && $id != ''): ?>
+								<small class="form-text text-muted">Username cannot be changed</small>
+							<?php endif; ?>
 						</div>
 						<div class="form-group"> <label for="" class="control-label">Class</label>
 							<select name="class_id" id="class_id" class="form-control form-control-sm select2">
@@ -68,12 +71,6 @@
 					<div class="col-md-6">
 
 						<div class="form-group">
-							<label class="control-label">Email</label>
-							<input type="email" class="form-control form-control-sm" name="email" required
-								value="<?php echo isset($email) ? $email : '' ?>">
-							<small id="#msg"></small>
-						</div>
-						<div class="form-group">
 							<label class="control-label">Password</label>
 							<input type="password" class="form-control form-control-sm" name="password" <?php echo !isset($id) ? "required" : '' ?>>
 							<small><i><?php echo isset($id) ? "Leave this blank if you dont want to change you password" : '' ?></i></small>
@@ -107,7 +104,7 @@
 
 	.card,
 	.card-body {
-		color: #efeaeaff;
+		color: black;
 		background: transparent !important;
 		backdrop-filter: blur(10px);
 		-webkit-backdrop-filter: blur(10px);
@@ -119,11 +116,17 @@
 	.custom-select {
 		background: rgba(255, 255, 255, 0.1);
 		/* transparent glass look */
-		border: 1px solid rgba(255, 255, 255, 0.6);
+		border: 1px solid rgba(0, 0, 0, 0.6);
 		/* white border */
-		color: #fff;
+		color: black;
 		/* white text */
 		border-radius: 8px;
+	}
+
+	.form-control[readonly] {
+		background: rgba(200, 200, 200, 0.3);
+		cursor: not-allowed;
+		opacity: 0.7;
 	}
 
 	img#cimg {
@@ -186,8 +189,8 @@
 						location.replace('index.php?page=student_list')
 					}, 750)
 				} else if (resp == 2) {
-					$('#msg').html("<div class='alert alert-danger'>Email already exist.</div>");
-					$('[name="email"]').addClass("border-danger")
+					$('#msg').html("<div class='alert alert-danger'>Username already exist.</div>");
+					$('[name="username"]').addClass("border-danger")
 					end_load()
 				}
 			}

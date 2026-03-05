@@ -20,21 +20,24 @@
 
 <style>
   .content-wrapper{
-    background: url('logobg.jpg') no-repeat center center fixed;
+    background: url('logobg.png') no-repeat center center fixed;
     background-size: cover;
   }
 
   .main-footer{
-  background: #020920;
+  background: white;
   color: white;
-  border-top: 1px solid #020920;
+  border-top: 1px solid white;
 }
+
+
   </style>
 
 
 
 <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
 <div class="wrapper">
+  
   <?php include 'topbar.php' ?>
   <?php include $_SESSION['login_view_folder'].'sidebar.php' ?>
 

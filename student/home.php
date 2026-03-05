@@ -34,19 +34,19 @@ $astat = array("Not Yet Started","Started","Closed");
   font-size: 2rem;
   font-weight: bold;
   font-family: "Helvetica", "Poppins", sans-serif;
-  color: #e8ebeeff;
+  color: black;
 }
 
 .dashboard-academic h4 {
   font-size: 1.1rem;
-  color: #f4f4f4ff;
+  color: black;
   margin-top: 10px;
 }
 
 .dashboard-academic p {
   margin-top: 5px;
   font-size: 1rem;
-  color: #f5f3f3ff;
+  color: ;
 }
 
 </style>

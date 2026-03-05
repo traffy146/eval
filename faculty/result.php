@@ -29,7 +29,7 @@ function ordinal_suffix($num)
 		<!-- Removed the col-md-3 class list selector for privacy -->
 		<div class="col-md-12">
 			<div class="callout callout-info"
-				style="background:transparent !important; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: 15px; border:none;color:white"
+				style="background:transparent !important; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: 15px; border:none;color:black"
 				id="printable">
 				<div>
 					<h3 class="text-center">Overall Evaluation Report</h3>
@@ -116,7 +116,7 @@ function ordinal_suffix($num)
 
 		table.wborder thead tr {
 			background: #6c757d linear-gradient(180deg, #828a91, #6c757d) repeat-x !important;
-			color: #fff;
+			color: #000000;
 		}
 
 		.text-center {
@@ -170,7 +170,7 @@ function ordinal_suffix($num)
 						Object.keys(data).map(q => {
 							Object.keys(data[q]).map(r => {
 								console.log($('.rate_' + r + '_' + q), data[q][r])
-								$('.rate_' + r + '_' + q).text(data[q][r] + '%')
+								$('.rate_' + r + '_' + q).text(parseFloat(data[q][r]).toFixed(2) + '%')
 							})
 						})
 					}

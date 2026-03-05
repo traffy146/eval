@@ -12,30 +12,33 @@
 .main-header.navbar i,
 .main-header.navbar span,
 .main-header.navbar b {
-  color: #ffffff !important;
+  color: white !important;
 }
 
 .main-header .dropdown-menu {
-  background-color: #212842; 
+  background-color: #6d7694ff; 
   border: none;
 }
 .main-header .dropdown-menu a {
-  color: #ffffff !important;
+  color: black !important;
 }
 .main-header .dropdown-menu a:hover {
-  background-color: #023e8a; 
+  background-color: #6d7694ff; 
   
 }
 .main-header{
-  background: #03045E;
+  background: #6d7694ff;
   color: white;
-  border-bottom: 1px solid #fff;
+
 }
+
+
+
 
 </style>
 
 <!-- Navbar -->
-<nav class="main-header navbar navbar-expand" style="background-color: #212842;" >
+<nav class="main-header navbar navbar-expand" style="background-color: #6d7694ff;" >
   <!-- Left navbar links -->
   <ul class="navbar-nav">
     <?php if(isset($_SESSION['login_id'])): ?>

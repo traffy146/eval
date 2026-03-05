@@ -1,8 +1,8 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
   <div class="dropdown">
     <a href="./" class="brand-link d-flex justify-content-center align-items-center">
-      <img src="eljmcnobglogo.png" alt="School Logo" class="brand-image img-circle elevation-3"
-        style="opacity: .9; width:50px; height: 110px; ">
+      <img src="guidance.png" alt="School Logo" class="brand-image img-circle elevation-3"
+        style="opacity: .9; width:70px; height: 130px; ">
     </a>
   </div>
 
@@ -18,8 +18,8 @@
       border-radius: 8px;
     }
 
-    .main-sidebar {
-      background: #212842 !important;
+    .main-sidebar { 
+      background: #6d7694ff !important;
       box-shadow: none !important;
     }
 
@@ -30,8 +30,8 @@
       align-items: center;
       padding: 12.8px 0 !important;
       box-shadow: none !important;
-      background: #212842 !important;
-      border-bottom: 1px solid #fff !important;
+      background: #6d7694ff !important;
+    
     }
 
     .brand-link .brand-image {
@@ -40,14 +40,14 @@
       object-fit: contain !important;
       transition: none !important;
       box-shadow: none !important;
-      background: #212842 !important;
+      background: #6d7694ff !important;
     }
 
     .sidebar-mini.sidebar-collapse .brand-link .brand-image {
       width: 50px !important;
       height: 120px !important;
       margin: 0 auto !important;
-      background: #212842 !important;
+      background: #6d7694ff !important;
     }
   </style>
 
@@ -116,7 +116,7 @@
           <a href="./index.php?page=criteria_list" class="nav-link nav-criteria_list">
             <i class="nav-icon fas fa-list-alt"></i>
             <p>
-              Evaluation Critria
+              Evaluation Criteria
             </p>
           </a>
         </li>

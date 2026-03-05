@@ -18,7 +18,7 @@ function ordinal_suffix($num)
 ?>
 <div class="col-lg-12">
     <div class="callout "
-        style="background:transparent !important; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: 15px; border:none;color:white">
+        style="background:transparent !important; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: 15px; border:none;color:black">
         <div class="d-flex w-100 justify-content-center align-items-center">
             <label for="faculty">Select Faculty</label>
             <div class=" mx-2 col-md-4">
@@ -49,7 +49,7 @@ function ordinal_suffix($num)
     <div class="row">
         <div class="col-md-3">
             <div class="callout "
-                style="background:transparent !important; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: 15px; border:none;color:white">
+                style="background:transparent !important; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: 15px; border:none;color:black">
                 <div class="list-group" id="class-list">
 
                 </div>
@@ -57,7 +57,7 @@ function ordinal_suffix($num)
         </div>
         <div class="col-md-9">
             <div class="callout "
-                style="background:transparent !important; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: 15px; border:none;color:white"
+                style="background:transparent !important; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: 15px; border:none;color:black"
                 id="printable">
                 <div>
                     <h3 class="text-center">Evaluation Report</h3>
@@ -207,7 +207,7 @@ function ordinal_suffix($num)
 
         table.wborder thead tr {
             background: #6c757d linear-gradient(180deg, #828a91, #6c757d) repeat-x !important;
-            color: #fff;
+            color: black;
         }
 
         .text-center {
@@ -340,7 +340,7 @@ function ordinal_suffix($num)
                         var data = resp.data
                         Object.keys(data).map(q => {
                             Object.keys(data[q]).map(r => {
-                                $('.rate_' + r + '_' + q).text(data[q][r] + '%')
+                                $('.rate_' + r + '_' + q).text(parseFloat(data[q][r]).toFixed(2) + '%')
                             })
                         })
 
@@ -368,7 +368,7 @@ function ordinal_suffix($num)
                         <h5>Overall Rating Summary</h5>
                         <div class="row">
                             <div class="col-md-4">
-                                <div class="card bg-success text-white">
+                                <div class="card bg-success text-black">
                                     <div class="card-body text-center">
                                         <h4>${ratingSummary.Good}</h4>
                                         <small>Good (${((ratingSummary.Good / total) * 100).toFixed(1)}%)</small>
@@ -376,7 +376,7 @@ function ordinal_suffix($num)
                                 </div>
                             </div>
                             <div class="col-md-4">
-                                <div class="card bg-warning text-white">
+                                <div class="card bg-warning text-black">
                                     <div class="card-body text-center">
                                         <h4>${ratingSummary.Neutral}</h4>
                                         <small>Neutral (${((ratingSummary.Neutral / total) * 100).toFixed(1)}%)</small>
@@ -384,7 +384,7 @@ function ordinal_suffix($num)
                                 </div>
                             </div>
                             <div class="col-md-4">
-                                <div class="card bg-danger text-white">
+                                <div class="card bg-danger text-black">
                                     <div class="card-body text-center">
                                         <h4>${ratingSummary.Bad}</h4>
                                         <small>Bad (${((ratingSummary.Bad / total) * 100).toFixed(1)}%)</small>

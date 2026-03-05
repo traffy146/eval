@@ -11,7 +11,7 @@ if (isset($_GET['id'])) {
 	<div class="card card-widget widget-user shadow">
 		<div class="widget-user-header bg-dark">
 			<h3 class="widget-user-username"><?php echo ucwords($name) ?></h3>
-			<h5 class="widget-user-desc"><?php echo $email ?></h5>
+			<h5 class="widget-user-desc"><?php echo $username ?></h5>
 		</div>
 		<div class="widget-user-image">
 			<?php if (empty($avatar) || (!empty($avatar) && !is_file('../assets/uploads/' . $avatar))): ?>

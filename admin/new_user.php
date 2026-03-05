@@ -42,12 +42,6 @@
 					<div class="col-md-6">
 
 						<div class="form-group">
-							<label class="control-label">Email</label>
-							<input type="email" class="form-control form-control-sm" name="email" required
-								value="<?php echo isset($email) ? $email : '' ?>">
-							<small id="#msg"></small>
-						</div>
-						<div class="form-group">
 							<label class="control-label">Password</label>
 							<input type="password" class="form-control form-control-sm" name="password" <?php echo !isset($id) ? "required" : '' ?>>
 							<small><i><?php echo isset($id) ? "Leave this blank if you dont want to change you password" : '' ?></i></small>
@@ -81,7 +75,7 @@
 
 	.card,
 	.card-body {
-		color: #efeaeaff;
+		color: balck;
 		background: transparent !important;
 		backdrop-filter: blur(10px);
 		-webkit-backdrop-filter: blur(10px);
@@ -93,9 +87,9 @@
 	.custom-select {
 		background: rgba(255, 255, 255, 0.1);
 		/* transparent glass look */
-		border: 1px solid rgba(255, 255, 255, 0.6);
+		border: 1px solid rgba(0, 0, 0, 0.6);
 		/* white border */
-		color: #fff;
+		color: black;
 		/* white text */
 		border-radius: 8px;
 	}
@@ -160,8 +154,8 @@
 						location.replace('index.php?page=user_list')
 					}, 750)
 				} else if (resp == 2) {
-					$('#msg').html("<div class='alert alert-danger'>Email already exist.</div>");
-					$('[name="email"]').addClass("border-danger")
+					$('#msg').html("<div class='alert alert-danger'>Username already exist.</div>");
+					$('[name="username"]').addClass("border-danger")
 					end_load()
 				}
 			}
