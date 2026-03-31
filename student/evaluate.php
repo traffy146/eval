@@ -132,16 +132,34 @@ $restriction = $conn->query("SELECT r.id,s.id as sid,f.id as fid,CONCAT(f.firstn
 
     <div class="form-group">
         <label for="comment">Comment <span class="text-danger">*</span></label>
-        <textarea name="comment" id="comment" rows="4" class="form-control"
+        <textarea name="comment" id="comment" rows="4" class="form-control" required
             placeholder="Write your feedback here..."></textarea>
     </div>
 </div>
 
 					<div class="card-tools">
-						<button class="btn btn-sm btn-flat btn-primary bg-gradient-primary mx-1" form="manage-evaluation">Submit Evaluation</button>
+						<button type="button" id="open-preview" class="btn btn-sm btn-flat btn-primary bg-gradient-primary mx-1">Preview & Submit</button>
 					</div>
 
 					</form>
+
+					<div class="modal fade" id="evaluation-preview-modal" tabindex="-1" role="dialog" aria-hidden="true">
+						<div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable" role="document">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title">Evaluation Preview</h5>
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+										<span aria-hidden="true">&times;</span>
+									</button>
+								</div>
+								<div class="modal-body" id="evaluation-preview-content"></div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-secondary" data-dismiss="modal">Back</button>
+									<button type="button" id="confirm-submit-evaluation" class="btn btn-primary">Confirm Submit</button>
+								</div>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -149,19 +167,106 @@ $restriction = $conn->query("SELECT r.id,s.id as sid,f.id as fid,CONCAT(f.firstn
 </div>
 <script>
 	$(document).ready(function () {
+		// Keep preview modal outside filtered card container to avoid stacking/click issues.
+		if ($('#evaluation-preview-modal').parent()[0] !== document.body) {
+			$('#evaluation-preview-modal').appendTo('body')
+		}
+
 		if ('<?php echo $_SESSION['academic']['status'] ?>' == 0) {
 			uni_modal("Information", "<?php echo $_SESSION['login_view_folder'] ?>not_started.php")
 		} else if ('<?php echo $_SESSION['academic']['status'] ?>' == 2) {
 			uni_modal("Information", "<?php echo $_SESSION['login_view_folder'] ?>closed.php")
 		}
-		else if ('<?php echo $_SESSION['academic']['status'] ?>' == 2) {
-			uni_modal("Information", "<?php echo $_SESSION['login_view_folder'] ?>closed.php")
-		}
 		if (<?php echo empty($rid) ? 1 : 0 ?> == 1)
 			uni_modal("Information", "<?php echo $_SESSION['login_view_folder'] ?>done.php")
 	})
+
+	function getQuestionRows() {
+		var rows = []
+		$('#manage-evaluation tbody tr').each(function () {
+			var criteria = $(this).closest('table').find('thead th:first').text().trim()
+			var questionCell = $(this).find('td:first').clone()
+			questionCell.find('input').remove()
+			var questionText = questionCell.text().trim()
+			var selectedRate = $(this).find('input[type="radio"]:checked').val() || '-'
+			rows.push({
+				criteria: criteria,
+				question: questionText,
+				rate: selectedRate
+			})
+		})
+		return rows
+	}
+
+	function validateComment() {
+		var comment = $.trim($('#comment').val())
+		if (comment === '') {
+			$('#comment').addClass('border-danger').focus()
+			alert_toast('Comment is required before submitting evaluation.', 'warning')
+			return false
+		}
+		$('#comment').removeClass('border-danger')
+		return true
+	}
+
+	function openPreviewModal() {
+		var rows = getQuestionRows()
+		var rating = $('input[name="rating"]:checked').val() || '-'
+		var comment = $('<div/>').text($.trim($('#comment').val())).html()
+		var facultySubject = $('.list-group-item.active').text().trim()
+		var previewHtml = '<div class="preview-meta mb-3"><strong>Faculty / Subject:</strong> ' + facultySubject + '</div>'
+		previewHtml += '<div class="table-responsive"><table class="table table-bordered table-sm preview-table">'
+		previewHtml += '<thead><tr><th style="width:30%">Criteria</th><th>Question</th><th class="text-center" style="width:120px">Rate</th></tr></thead><tbody>'
+
+		rows.forEach(function (row) {
+			previewHtml += '<tr><td>' + row.criteria + '</td><td>' + row.question + '</td><td class="text-center font-weight-bold">' + row.rate + '</td></tr>'
+		})
+
+		previewHtml += '</tbody></table></div>'
+		previewHtml += '<div class="preview-feedback mt-3">'
+		previewHtml += '<p class="mb-1"><strong>Overall Rating:</strong> ' + rating + '</p>'
+		previewHtml += '<p class="mb-0"><strong>Comment:</strong><br>' + comment + '</p>'
+		previewHtml += '</div>'
+
+		$('#evaluation-preview-content').html(previewHtml)
+		$('#evaluation-preview-modal').modal('show')
+	}
+
+	$('#evaluation-preview-modal').on('shown.bs.modal', function () {
+		$(this).css('display', 'block')
+	})
+
+	$('#evaluation-preview-modal').on('show.bs.modal', function () {
+		setTimeout(function () {
+			$('.modal-backdrop').last().addClass('evaluation-preview-backdrop')
+		}, 0)
+	})
+
+	$('#evaluation-preview-modal').on('hidden.bs.modal', function () {
+		$('.evaluation-preview-backdrop').removeClass('evaluation-preview-backdrop')
+	})
+
+	$('#open-preview').click(function () {
+		if (!validateComment()) {
+			return false
+		}
+		openPreviewModal()
+	})
+
+	$('#confirm-submit-evaluation').click(function () {
+		$('#evaluation-preview-modal').modal('hide')
+		$('#manage-evaluation').data('confirmed', true).trigger('submit')
+	})
+
 	$('#manage-evaluation').submit(function (e) {
 		e.preventDefault();
+		if (!$(this).data('confirmed')) {
+			if (!validateComment()) {
+				return false
+			}
+			openPreviewModal()
+			return false
+		}
 		start_load()
 		$.ajax({
 			url: 'ajax.php?action=save_evaluation',
@@ -173,13 +278,19 @@ $restriction = $conn->query("SELECT r.id,s.id as sid,f.id as fid,CONCAT(f.firstn
 					setTimeout(function () {
 						location.reload()
 					}, 1750)
+				} else if (resp == 2) {
+					alert_toast("Comment is required before submitting.", "warning");
+					$('#comment').addClass('border-danger').focus()
+					end_load();
 				} else {
 					alert_toast("An error occurred. Please try again.", "error");
 					end_load();
 				}
+				$('#manage-evaluation').data('confirmed', false)
 			},
 			error: function() {
 				alert_toast("An error occurred. Please try again.", "error");
+				$('#manage-evaluation').data('confirmed', false)
 				end_load();
 			}
 		})
@@ -201,7 +312,6 @@ $restriction = $conn->query("SELECT r.id,s.id as sid,f.id as fid,CONCAT(f.firstn
         display: none; /* hide school name text on small screens */
     }
 }
-
 
 	/* Base styling for all rating labels */
 .icheck-primary label {
@@ -225,61 +335,50 @@ $restriction = $conn->query("SELECT r.id,s.id as sid,f.id as fid,CONCAT(f.firstn
 	color: #dc3545;
 }
 
-
-/* ===========================
-   SCROLLABLE EVALUATION TABLE
-   =========================== */
-
-/* Wrapper effect using table itself */
-.table {
-    display: block;
-    width: 100%;
-    overflow-x: auto;
-    white-space: nowrap;
-    -webkit-overflow-scrolling: touch;
+#evaluation-preview-modal .table td,
+#evaluation-preview-modal .table th {
+	vertical-align: middle;
 }
 
-/* Keep table structure intact */
-.table thead,
-.table tbody,
-.table tr {
-    display: table;
-    width: 100%;
-    table-layout: fixed;
+#evaluation-preview-modal .modal-content {
+	border-radius: 10px;
 }
 
-/* Sticky header for better UX */
-.table thead th {
-    position: sticky;
-    top: 0;
-    background: #809db8ff; /* matches bg-gradient-secondary */
-    color: #fff;
-    z-index: 2;
+#evaluation-preview-modal {
+	z-index: 2100;
 }
 
-/* Question column wider */
-.table td:first-child,
-.table th:first-child {
-    width: 45%;
-    white-space: normal;
+#evaluation-preview-modal .modal-dialog {
+	margin: 1.75rem auto;
 }
 
-/* Rating columns fixed width */
-.table th:not(:first-child),
-.table td:not(:first-child) {
-    width: 11%;
-    text-align: center;
+.modal-backdrop.evaluation-preview-backdrop {
+	z-index: 2090;
 }
 
-/* Improve scroll hint on mobile */
-@media (max-width: 768px) {
-    .table {
-        border-radius: 10px;
-        box-shadow: inset -10px 0 10px -10px rgba(0,0,0,0.2);
-    }
+#evaluation-preview-modal .modal-body {
+	max-height: 70vh;
+	overflow-y: auto;
 }
 
-/* Make radios easier to tap */
+#evaluation-preview-modal .preview-meta {
+	padding: 8px 12px;
+	border-radius: 6px;
+	background: #f8f9fa;
+	border: 1px solid #e9ecef;
+}
+
+#evaluation-preview-modal .preview-table td,
+#evaluation-preview-modal .preview-table th {
+	font-size: 0.92rem;
+}
+
+#evaluation-preview-modal .preview-feedback {
+	padding: 10px 12px;
+	border-radius: 6px;
+	background: #f8f9fa;
+	border: 1px solid #e9ecef;
+}
 
 
 

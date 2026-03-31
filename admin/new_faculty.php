@@ -163,6 +163,10 @@
 					$('#msg').html("<div class='alert alert-danger'>Username already exist.</div>");
 					$('[name="username"]').addClass("border-danger")
 					end_load()
+				} else if (resp == 4) {
+					$('#msg').html("<div class='alert alert-danger'>Only admin can change the username.</div>");
+					$('[name="username"]').addClass("border-danger")
+					end_load()
 				} else if (resp == 3) {
 					$('#msg').html("<div class='alert alert-danger'>School ID already exist.</div>");
 					$('[name="school_id"]').addClass("border-danger")

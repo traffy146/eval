@@ -40,12 +40,22 @@
                     }
                     ?>
                 </select>
+                <select id="filter-section" class="form-control mr-2">
+                    <option value="">All Sections</option>
+                    <?php
+                    $sections = $conn->query("SELECT DISTINCT section FROM class_list WHERE section IS NOT NULL AND section != '' ORDER BY section ASC");
+                    while ($sec = $sections->fetch_assoc()) {
+                        echo '<option value="' . htmlspecialchars($sec['section']) . '">' . htmlspecialchars($sec['section']) . '</option>';
+                    }
+                    ?>
+                </select>
                 <button type="submit" class="btn btn-primary">Filter</button>
             </form>
             <table class="table table-bordered table-hover" id="eval-status-table">
                 <thead>
                     <tr>
                         <th>Student Name</th>
+                        <th>Section</th>
                         <th>Subject</th>
                         <th>Faculty</th>
                         <th>Status</th>
@@ -61,18 +71,22 @@
                     // Get all evaluated rows
                     $evals = $conn->query("SELECT e.*, 
     CONCAT(s.firstname,' ',COALESCE(NULLIF(s.middlename,''),''),' ',s.lastname) as student_name, 
+    c.section as section_name,
     sub.subject as subject_name, 
     CONCAT(f.firstname,' ',COALESCE(NULLIF(f.middlename,''),''),' ',f.lastname) as faculty_name
     FROM evaluation_list e
     INNER JOIN student_list s ON e.student_id = s.id
+    LEFT JOIN class_list c ON s.class_id = c.id
     INNER JOIN subject_list sub ON e.subject_id = sub.id
     INNER JOIN faculty_list f ON e.faculty_id = f.id
     WHERE e.academic_id = $academic_id
 ");
 
                     while ($row = $evals->fetch_assoc()) {
-                        echo '<tr data-student="' . $row['student_id'] . '" data-subject="' . $row['subject_id'] . '" data-faculty="' . $row['faculty_id'] . '">
+                        $section_name = !empty($row['section_name']) ? $row['section_name'] : 'N/A';
+                        echo '<tr data-student="' . $row['student_id'] . '" data-subject="' . $row['subject_id'] . '" data-faculty="' . $row['faculty_id'] . '" data-section="' . htmlspecialchars($section_name, ENT_QUOTES) . '">
         <td>' . $row['student_name'] . '</td>
+        <td>' . htmlspecialchars($section_name) . '</td>
         <td>' . $row['subject_name'] . '</td>
         <td>' . $row['faculty_name'] . '</td>
         <td><span class="badge badge-success">Evaluated</span></td>
@@ -112,10 +126,10 @@
         $('#eval-status-table').dataTable();
 
         // Only one filter active at a time
-        $('#filter-student, #filter-subject, #filter-faculty').on('change', function () {
+        $('#filter-student, #filter-subject, #filter-faculty, #filter-section').on('change', function () {
             var id = $(this).attr('id');
             // Reset other filters
-            $('#filter-student, #filter-subject, #filter-faculty').not('#' + id).val('');
+            $('#filter-student, #filter-subject, #filter-faculty, #filter-section').not('#' + id).val('');
             var value = $(this).val();
             var type = id.replace('filter-', '');
 

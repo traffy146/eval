@@ -87,6 +87,16 @@ class Action
 		extract($_POST);
 		$data = "";
 		$password_changed = false;
+		$previous_username = '';
+		if (!empty($id)) {
+			$existing_user = $this->db->query("SELECT username FROM users where id = {$id}");
+			if ($existing_user && $existing_user->num_rows > 0) {
+				$previous_username = $existing_user->fetch_assoc()['username'];
+			}
+		}
+		if (!empty($id) && isset($_SESSION['login_type']) && $_SESSION['login_type'] != 1 && $previous_username !== '' && $previous_username != $username) {
+			return 4;
+		}
 		foreach ($_POST as $k => $v) {
 			if (!in_array($k, array('id', 'cpass', 'password')) && !is_numeric($k)) {
 				if (empty($data)) {
@@ -187,6 +197,18 @@ class Action
 		extract($_POST);
 		$data = "";
 		$type = array("", "users", "faculty_list", "student_list");
+		$current_username = '';
+		if (!empty($id)) {
+			$current_info = $this->db->query("SELECT username FROM {$type[$_SESSION['login_type']]} where id = {$id}");
+			if ($current_info && $current_info->num_rows > 0) {
+				$current_username = $current_info->fetch_assoc()['username'];
+			}
+		}
+		$username = isset($username) ? trim($username) : $current_username;
+		if ($_SESSION['login_type'] != 1 && $current_username !== '' && $username != $current_username) {
+			return 4;
+			exit;
+		}
 		foreach ($_POST as $k => $v) {
 			if (!in_array($k, array('id', 'cpass', 'table', 'password')) && !is_numeric($k)) {
 
@@ -213,7 +235,6 @@ class Action
 		if (empty($id)) {
 			$save = $this->db->query("INSERT INTO {$type[$_SESSION['login_type']]} set $data");
 		} else {
-			echo "UPDATE {$type[$_SESSION['login_type']]} set $data where id = $id";
 			$save = $this->db->query("UPDATE {$type[$_SESSION['login_type']]} set $data where id = $id");
 		}
 
@@ -569,6 +590,16 @@ class Action
 		extract($_POST);
 		$data = "";
 		$password_changed = false;
+		$previous_username = '';
+		if (!empty($id)) {
+			$existing_faculty = $this->db->query("SELECT username FROM faculty_list where id = {$id}");
+			if ($existing_faculty && $existing_faculty->num_rows > 0) {
+				$previous_username = $existing_faculty->fetch_assoc()['username'];
+			}
+		}
+		if (!empty($id) && isset($_SESSION['login_type']) && $_SESSION['login_type'] != 1 && $previous_username !== '' && $previous_username != $username) {
+			return 4;
+		}
 		foreach ($_POST as $k => $v) {
 			if (!in_array($k, array('id', 'cpass', 'password')) && !is_numeric($k)) {
 				if (empty($data)) {
@@ -637,6 +668,16 @@ class Action
 		extract($_POST);
 		$data = "";
 		$password_changed = false;
+		$previous_username = '';
+		if (!empty($id)) {
+			$existing_student = $this->db->query("SELECT username FROM student_list where id = {$id}");
+			if ($existing_student && $existing_student->num_rows > 0) {
+				$previous_username = $existing_student->fetch_assoc()['username'];
+			}
+		}
+		if (!empty($id) && isset($_SESSION['login_type']) && $_SESSION['login_type'] != 1 && $previous_username !== '' && $previous_username != $username) {
+			return 4;
+		}
 		foreach ($_POST as $k => $v) {
 			if (!in_array($k, array('id', 'cpass', 'password')) && !is_numeric($k)) {
 				if (empty($data)) {
@@ -890,7 +931,7 @@ class Action
 	{
 		extract($_POST);
 		$data = array();
-		$get = $this->db->query("SELECT iss.*, s.code, s.subject, s.description 
+		$get = $this->db->query("SELECT iss.id as mapping_id, iss.added_at, s.code, s.subject 
 								FROM irregular_student_subjects iss
 								INNER JOIN subject_list s ON iss.subject_id = s.id
 								WHERE iss.student_id = $student_id
@@ -900,8 +941,8 @@ class Action
 			$html .= '<tr>';
 			$html .= '<td>' . $row['code'] . '</td>';
 			$html .= '<td>' . $row['subject'] . '</td>';
-			$html .= '<td>' . $row['description'] . '</td>';
-			$html .= '<td class="text-center"><button class="btn btn-sm btn-danger remove-irregular-subject" data-id="' . $row['id'] . '"><i class="fa fa-trash"></i></button></td>';
+			$html .= '<td>' . date('M d, Y h:i A', strtotime($row['added_at'])) . '</td>';
+			$html .= '<td class="text-center"><button type="button" class="btn btn-sm btn-danger remove-irregular-subject" data-id="' . $row['mapping_id'] . '"><i class="fa fa-trash"></i></button></td>';
 			$html .= '</tr>';
 		}
 		if ($html == '') {
@@ -1022,11 +1063,15 @@ class Action
 	{
 
 		extract($_POST);
+		$comment = isset($comment) ? trim($comment) : '';
+		if ($comment === '') {
+			return 2;
+		}
 
 		$feedback_id = null;
 		if (isset($rating) || isset($comment)) {
 			$rating = isset($rating) ? $this->db->real_escape_string($rating) : '';
-			$feedback_comment = isset($comment) ? $this->db->real_escape_string($comment) : '';
+			$feedback_comment = $this->db->real_escape_string($comment);
 
 			$feedback_sql = "INSERT INTO additional_feedback (rating, comment) 
 						 VALUES ('{$rating}', '{$feedback_comment}')";

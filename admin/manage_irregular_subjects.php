@@ -161,11 +161,22 @@
         });
     }
 
+    $(document).on('click', '.remove-irregular-subject', function () {
+        var id = $(this).data('id');
+        var student_id = $('#irregular_student_select').val();
+        if (!id || !student_id) {
+            alert_toast('Unable to remove subject. Please refresh and try again.', 'warning');
+            return;
+        }
+        remove_irregular_subject(id, student_id);
+    });
+
     function remove_irregular_subject(id, student_id) {
         _conf("Are you sure to remove this subject?", "confirm_remove_subject", [id, student_id]);
     }
 
     function confirm_remove_subject(id, student_id) {
+        $('#confirm_modal').modal('hide');
         start_load();
         $.ajax({
             url: 'ajax.php?action=remove_irregular_subject',

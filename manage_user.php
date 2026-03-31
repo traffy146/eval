@@ -25,6 +25,14 @@ if (isset($_GET['id'])) {
 				value="<?php echo isset($meta['lastname']) ? $meta['lastname'] : '' ?>" required>
 		</div>
 		<div class="form-group">
+			<label for="username">Username</label>
+			<input type="text" name="username" id="username" class="form-control"
+				value="<?php echo isset($meta['username']) ? $meta['username'] : '' ?>" <?php echo $_SESSION['login_type'] != 1 ? 'readonly' : '' ?> required>
+			<?php if ($_SESSION['login_type'] != 1): ?>
+				<small class="form-text text-muted">Only admin can change username.</small>
+			<?php endif; ?>
+		</div>
+		<div class="form-group">
 			<label for="password">Password</label>
 			<input type="password" name="password" id="password" class="form-control" value="" autocomplete="off">
 			<small><i>Leave this blank if you dont want to change the password.</i></small>
@@ -81,8 +89,13 @@ if (isset($_GET['id'])) {
 					setTimeout(function () {
 						location.reload()
 					}, 1500)
+				} else if (resp == 4) {
+					$('#msg').html('<div class="alert alert-danger">Only admin can change username.</div>')
+					$('#username').addClass('border-danger')
+					end_load()
 				} else {
 					$('#msg').html('<div class="alert alert-danger">Username already exist</div>')
+					$('#username').addClass('border-danger')
 					end_load()
 				}
 			}

@@ -59,6 +59,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
+  line-clamp: 3;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     font-size: smaller;
@@ -101,3 +102,45 @@
     max-height: calc(100%);
     max-width: calc(100%);
   }
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.table-responsive > .table {
+  margin-bottom: 0;
+}
+
+.dataTables_wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.dataTables_wrapper .dataTable {
+  width: 100% !important;
+}
+
+@media (max-width: 991.98px) {
+  .table-responsive .table th,
+  .table-responsive .table td,
+  table.dataTable th,
+  table.dataTable td {
+    white-space: nowrap;
+  }
+
+  .dataTables_wrapper .dataTable {
+    min-width: 720px;
+  }
+
+  .main-header.navbar {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+
+  .content-wrapper {
+    overflow-x: hidden;
+  }
+}

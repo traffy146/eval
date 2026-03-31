@@ -156,6 +156,10 @@
 				} else if (resp == 2) {
 					$('#msg').html("<div class='alert alert-danger'>Username already exist.</div>");
 					$('[name="username"]').addClass("border-danger")
+						end_load()
+					} else if (resp == 4) {
+						$('#msg').html("<div class='alert alert-danger'>Only admin can change the username.</div>");
+						$('[name="username"]').addClass("border-danger")
 					end_load()
 				}
 			}

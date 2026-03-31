@@ -30,10 +30,7 @@
 						</div>
 						<div class="form-group"> <label for="" class="control-label">Username</label>
 							<input type="text" name="username" class="form-control form-control-sm" required
-								value="<?php echo isset($username) ? $username : '' ?>" <?php echo isset($id) && $id != '' ? 'readonly' : '' ?>>
-							<?php if (isset($id) && $id != ''): ?>
-								<small class="form-text text-muted">Username cannot be changed</small>
-							<?php endif; ?>
+								value="<?php echo isset($username) ? $username : '' ?>">
 						</div>
 						<div class="form-group"> <label for="" class="control-label">Class</label>
 							<select name="class_id" id="class_id" class="form-control form-control-sm select2">
@@ -191,6 +188,10 @@
 				} else if (resp == 2) {
 					$('#msg').html("<div class='alert alert-danger'>Username already exist.</div>");
 					$('[name="username"]').addClass("border-danger")
+						end_load()
+					} else if (resp == 4) {
+						$('#msg').html("<div class='alert alert-danger'>Only admin can change the username.</div>");
+						$('[name="username"]').addClass("border-danger")
 					end_load()
 				}
 			}

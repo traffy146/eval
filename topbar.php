@@ -32,13 +32,36 @@
 
 }
 
+.main-header .navbar-nav {
+  align-items: center;
+}
+
+.main-header .user-name {
+  max-width: 145px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+@media (max-width: 576px) {
+  .main-header .role-label {
+    display: none;
+  }
+
+  .main-header .user-name {
+    max-width: 90px;
+  }
+}
+
 
 
 
 </style>
 
 <!-- Navbar -->
-<nav class="main-header navbar navbar-expand" style="background-color: #6d7694ff;" >
+<nav class="main-header navbar navbar-expand-sm" style="background-color: #6d7694ff;" >
   <!-- Left navbar links -->
   <ul class="navbar-nav">
     <?php if(isset($_SESSION['login_id'])): ?>
@@ -51,7 +74,7 @@
     <li>
       <a class="nav-link text-white" href="./" role="button">
         <?php if($_SESSION['login_type'] == 'Administrator'): ?>
-          <b>Administrator</b>
+          <b class="role-label">Administrator</b>
         <?php endif; ?>
       </a>
     </li>
@@ -70,7 +93,7 @@
           <div class="d-flex align-items-center">
             <span><img src="assets/uploads/<?php echo $_SESSION['login_avatar'] ?>" alt="" class="user-img border"></span>
             <?php if($_SESSION['login_type'] == 'Administrator'): ?>
-              <span><b><?php echo ucwords($_SESSION['login_firstname']) ?></b></span>
+              <span class="user-name"><b><?php echo ucwords($_SESSION['login_firstname']) ?></b></span>
             <?php endif; ?>
             <span class="fa fa-angle-down ml-2"></span>
           </div>
