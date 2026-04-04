@@ -47,6 +47,27 @@ function ordinal_suffix($num)
 					<p class=""><b>Total Student Evaluated: <span id="tse"></span></b></p>
 					<p class=""><b>Overall Average (per item): <span id="avg_per_item"></span></b> <small>(<span
 								id="avg_verbal"></span>)</small></p>
+					<?php
+					$feedback_rows = array();
+					$rating_summary = array('good' => 0, 'neutral' => 0, 'bad' => 0);
+					$feedback_q = $conn->query("SELECT af.rating, af.comment
+										  FROM additional_feedback af
+										  INNER JOIN evaluation_list el ON el.feedback_id = af.id
+										  WHERE el.academic_id = {$_SESSION['academic']['id']}
+										  AND el.faculty_id = {$faculty_id}
+										  AND el.feedback_id IS NOT NULL
+										  AND el.feedback_id > 0
+										  ORDER BY af.id DESC");
+					if ($feedback_q) {
+						while ($frow = $feedback_q->fetch_assoc()) {
+							$feedback_rows[] = $frow;
+							$rk = strtolower(trim($frow['rating']));
+							if (isset($rating_summary[$rk])) {
+								$rating_summary[$rk]++;
+							}
+						}
+					}
+					?>
 				</div>
 				<fieldset class="border border-info p-2 w-100">
 					<legend class="w-auto">Criteria for Evaluation</legend>
@@ -89,7 +110,41 @@ function ordinal_suffix($num)
 				</tbody>
 				</table>
 			<?php endwhile; ?>
-			<!-- Removed Additional Feedback Section for Privacy -->
+			<div id="additional-feedback-wrapper" class="mt-4">
+				<h4>Additional Feedback</h4>
+				<div class="mb-2">
+					<span class="badge badge-success mr-1">Good: <?php echo (int) $rating_summary['good'] ?></span>
+					<span class="badge badge-warning mr-1">Neutral:
+						<?php echo (int) $rating_summary['neutral'] ?></span>
+					<span class="badge badge-danger">Bad: <?php echo (int) $rating_summary['bad'] ?></span>
+				</div>
+				<div class="border rounded p-2" style="max-height:300px; overflow:auto;">
+					<?php if (count($feedback_rows) > 0): ?>
+						<ul class="list-unstyled mb-0">
+							<?php foreach ($feedback_rows as $item): ?>
+								<?php
+								$rating_lower = strtolower(trim($item['rating']));
+								$badge_class = 'secondary';
+								if ($rating_lower === 'good') {
+									$badge_class = 'success';
+								} elseif ($rating_lower === 'neutral') {
+									$badge_class = 'warning';
+								} elseif ($rating_lower === 'bad') {
+									$badge_class = 'danger';
+								}
+								?>
+								<li class="mb-2">
+									<span
+										class="badge badge-<?php echo $badge_class ?> text-uppercase mr-2"><?php echo htmlspecialchars($rating_lower ?: 'n/a', ENT_QUOTES, 'UTF-8') ?></span>
+									<span><?php echo htmlspecialchars(trim($item['comment']) !== '' ? $item['comment'] : 'No comment provided', ENT_QUOTES, 'UTF-8') ?></span>
+								</li>
+							<?php endforeach; ?>
+						</ul>
+					<?php else: ?>
+						<p class="text-muted mb-0">No feedback available.</p>
+					<?php endif; ?>
+				</div>
+			</div>
 		</div>
 	</div>
 </div>
